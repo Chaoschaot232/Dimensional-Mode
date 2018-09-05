@@ -92,20 +92,24 @@ public class DimensionalCommand extends CommandBase {
 		GameType type;
 		switch(args[0])
 		{
-			case "SURVIVAL":
 			case "0":
+				args[0] = "SURVIVAL";
+			case "SURVIVAL":
 				type = GameType.SURVIVAL;
 				break;
-			case "CREATIVE":
 			case "1":
+				args[0] = "CREATIVE";
+			case "CREATIVE":
 				type = GameType.CREATIVE;
 				break;
-			case "ADVENTURE":
 			case "2":
+				args[0] = "ADVENTURE";
+			case "ADVENTURE":
 				type = GameType.ADVENTURE;
 				break;
-			case "SPECTATOR":
 			case "3":
+				args[0] = "SPECTATOR";
+			case "SPECTATOR":
 				type = GameType.SPECTATOR;
 				break;
 			default:
