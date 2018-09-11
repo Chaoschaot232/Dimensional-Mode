@@ -100,7 +100,7 @@ public class DimensionalMode {
 				type = GameType.SPECTATOR;
 				break;
 			default:
-				LogManager.getLogger("##NAME##").info("Invalid game-mode while teleporting to " + name + "; " + mode);
+				LogManager.getLogger("##NAME##").info("Invalid game-mode while teleporting to " + name + ": " + mode);
 				return;
 		}
 		GameType oldType = ((EntityPlayerMP)event.player).interactionManager.getGameType();
