@@ -78,31 +78,32 @@ public class DimensionalMode {
 			return;
 		
 		String name = "DIM" + Integer.toString(toDim);
-		if(!config.hasKey(configCategory, name))
-		{
-			event.player.setGameType(event.player.getServer().getGameType());
-			return;
-		}
-		String mode = config.get(configCategory, name, "CREATIVE").getString().toUpperCase();
 		GameType type;
-		switch(mode)
+		if(config.hasKey(configCategory, name))
 		{
-			case "CREATIVE":
-				type = GameType.CREATIVE;
-				break;
-			case "SURVIVAL":
-				type = GameType.SURVIVAL;
-				break;
-			case "ADVENTURE":
-				type = GameType.ADVENTURE;
-				break;
-			case "SPECTATOR":
-				type = GameType.SPECTATOR;
-				break;
-			default:
-				LogManager.getLogger("##NAME##").info("Invalid game-mode while teleporting to " + name + ": " + mode);
-				return;
+			String mode = config.get(configCategory, name, "CREATIVE").getString().toUpperCase();
+			switch(mode)
+			{
+				case "CREATIVE":
+					type = GameType.CREATIVE;
+					break;
+				case "SURVIVAL":
+					type = GameType.SURVIVAL;
+					break;
+				case "ADVENTURE":
+					type = GameType.ADVENTURE;
+					break;
+				case "SPECTATOR":
+					type = GameType.SPECTATOR;
+					break;
+				default:
+					LogManager.getLogger("##NAME##").info("Invalid game-mode while teleporting to " + name + ": " + mode);
+					return;
+			}
 		}
+		else
+			type = event.player.getServer().getGameType();
+		
 		GameType oldType = ((EntityPlayerMP)event.player).interactionManager.getGameType();
 		if(oldType == type)
 			return;
