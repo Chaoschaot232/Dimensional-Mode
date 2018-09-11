@@ -22,6 +22,7 @@ import java.io.File;
 
 import org.apache.logging.log4j.LogManager;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.GameType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -38,11 +39,15 @@ public class DimensionalMode {
 	Configuration config;
 	final String configCategory = "gamemodes";
 	final String permNode = "##MODID##.command";
+	boolean deleteInv;
 	
 	@Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
 		config = new Configuration(new File(event.getModConfigurationDirectory(), "##NAME##.cfg"));
 		config.load();
+		deleteInv = config.get(Configuration.CATEGORY_GENERAL, "deleteCreativeInventory", false).getBoolean();
+		if(config.hasChanged())
+			config.save();
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
@@ -98,6 +103,11 @@ public class DimensionalMode {
 				LogManager.getLogger("##NAME##").info("Invalid game-mode while teleporting to " + name + "; " + mode);
 				return;
 		}
+		GameType oldType = ((EntityPlayerMP)event.player).interactionManager.getGameType();
+		if(oldType == type)
+			return;
+		if(deleteInv && oldType == GameType.CREATIVE && type != GameType.CREATIVE)
+			event.player.inventory.clear();
 		event.player.setGameType(type);
 	}
 }
