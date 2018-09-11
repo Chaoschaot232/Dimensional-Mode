@@ -59,7 +59,6 @@ public class DimensionalCommand extends CommandBase {
 			sender.sendMessage(makeMessage(TextFormatting.RED, getUsage(sender)));
 			return;
 		}
-		args[0] = args[0].toUpperCase();
 		args[1] = args[1].toUpperCase();
 		if(!args[1].startsWith("DIM"))
 		{
@@ -90,6 +89,7 @@ public class DimensionalCommand extends CommandBase {
 		}
 		
 		GameType type;
+		args[0] = args[0].toUpperCase();
 		switch(args[0])
 		{
 			case "0":
