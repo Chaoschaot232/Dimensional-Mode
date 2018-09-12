@@ -70,6 +70,10 @@ public class DimensionalCommand extends CommandBase {
 			case "deletecreativeinventory":
 			case "dci":
 				deleteCommand(sender);
+				break;
+			default:
+				sender.sendMessage(makeMessage(TextFormatting.RED, getUsage(sender)));
+				break;
 		}
 	}
 	
