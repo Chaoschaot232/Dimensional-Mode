@@ -76,9 +76,10 @@ public class DimensionalCommand extends CommandBase {
 	private void deleteCommand(ICommandSender sender)
 	{
 		Property prop = mod.config.get(Configuration.CATEGORY_GENERAL, "deleteCreativeInventory", false);
-		boolean newSetting = !prop.getBoolean();
-		prop.set(newSetting);
-		sender.sendMessage(makeMessage(TextFormatting.GREEN, "New config state: " +prop.toString()));
+		mod.deleteInv = !prop.getBoolean();
+		prop.set(mod.deleteInv);
+		mod.config.save();
+		sender.sendMessage(makeMessage(TextFormatting.GREEN, "New config state: " + Boolean.toString(mod.deleteInv)));
 	}
 	
 	private void setCommand(MinecraftServer server, ICommandSender sender, String[] args)
