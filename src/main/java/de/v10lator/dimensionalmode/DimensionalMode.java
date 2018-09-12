@@ -43,7 +43,7 @@ public class DimensionalMode {
 	
 	@Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
-		config = new Configuration(new File(event.getModConfigurationDirectory(), "##NAME##.cfg"));
+		config = new Configuration(new File(event.getModConfigurationDirectory(), "##NAME##.cfg"), "1.0");
 		config.load();
 		deleteInv = config.get(Configuration.CATEGORY_GENERAL, "deleteCreativeInventory", false).getBoolean();
 		if(config.hasChanged())
