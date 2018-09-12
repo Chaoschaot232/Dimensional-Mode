@@ -28,7 +28,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.GameType;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 public class DimensionalCommand extends CommandBase {
