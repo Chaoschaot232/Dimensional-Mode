@@ -97,8 +97,10 @@ public class DimensionalMode {
 					type = GameType.SPECTATOR;
 					break;
 				default:
+					type = event.player.getServer().getGameType();
 					LogManager.getLogger("##NAME##").info("Invalid game-mode while teleporting to " + name + ": " + mode);
-					return;
+					LogManager.getLogger("##NAME##").info("Defaulting to " + type.getName());
+					break;
 			}
 		}
 		else

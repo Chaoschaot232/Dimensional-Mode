@@ -27,6 +27,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.GameType;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 public class DimensionalCommand extends CommandBase {
@@ -44,7 +46,7 @@ public class DimensionalCommand extends CommandBase {
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/dimmode <mode> <world>";
+		return "/dimmode <set|deleteCreativeInventory>";
 	}
 	
 	@Override
@@ -54,77 +56,104 @@ public class DimensionalCommand extends CommandBase {
 
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		if(args.length != 2)
+		if(args.length < 1)
 		{
 			sender.sendMessage(makeMessage(TextFormatting.RED, getUsage(sender)));
 			return;
 		}
-		args[1] = args[1].toUpperCase();
-		if(!args[1].startsWith("DIM"))
+		args[0] = args[0].toLowerCase();
+		switch(args[0])
+		{
+			case "set":
+				setCommand(server, sender, args);
+				break;
+			case "deletecreativeinventory":
+			case "dci":
+				deleteCommand(sender);
+		}
+	}
+	
+	private void deleteCommand(ICommandSender sender)
+	{
+		Property prop = mod.config.get(Configuration.CATEGORY_GENERAL, "deleteCreativeInventory", false);
+		boolean newSetting = !prop.getBoolean();
+		prop.set(newSetting);
+		sender.sendMessage(makeMessage(TextFormatting.GREEN, "New config state: " +prop.toString()));
+	}
+	
+	private void setCommand(MinecraftServer server, ICommandSender sender, String[] args)
+	{
+		if(args.length != 3)
+		{
+			sender.sendMessage(makeMessage(TextFormatting.RED, "/dimmode set <mode> <world>"));
+			return;
+		}
+		args[2] = args[2].toUpperCase();
+		if(!args[2].startsWith("DIM"))
 		{
 			try
 			{
-				args[1] = "DIM" + Integer.parseInt(args[1]);
+				args[2] = "DIM" + Integer.parseInt(args[2]);
 			}
 			catch(NumberFormatException e)
 			{
-				sender.sendMessage(makeMessage(TextFormatting.RED, "Invalid dimension: " + args[1]));
+				sender.sendMessage(makeMessage(TextFormatting.RED, "Invalid dimension: " + args[2]));
 				return;
 			}
 		}
 		WorldServer dimension;
 		try
 		{
-			dimension = server.getWorld(Integer.parseInt(args[1].substring(3)));
+			dimension = server.getWorld(Integer.parseInt(args[2].substring(3)));
 		}
 		catch(NumberFormatException e)
 		{
-			sender.sendMessage(makeMessage(TextFormatting.RED, "Invalid dimension: " + args[1]));
+			sender.sendMessage(makeMessage(TextFormatting.RED, "Invalid dimension: " + args[2]));
 			return;
 		}
 		if(dimension == null)
 		{
-			sender.sendMessage(makeMessage(TextFormatting.RED, "Invalid dimension: " + args[1]));
+			sender.sendMessage(makeMessage(TextFormatting.RED, "Invalid dimension: " + args[2]));
 			return;
 		}
 		
 		GameType type;
-		args[0] = args[0].toUpperCase();
-		switch(args[0])
+		args[1] = args[1].toUpperCase();
+		switch(args[1])
 		{
 			case "0":
-				args[0] = "SURVIVAL";
+				args[1] = "SURVIVAL";
 			case "SURVIVAL":
 				type = GameType.SURVIVAL;
 				break;
 			case "1":
-				args[0] = "CREATIVE";
+				args[1] = "CREATIVE";
 			case "CREATIVE":
 				type = GameType.CREATIVE;
 				break;
 			case "2":
-				args[0] = "ADVENTURE";
+				args[1] = "ADVENTURE";
 			case "ADVENTURE":
 				type = GameType.ADVENTURE;
 				break;
 			case "3":
-				args[0] = "SPECTATOR";
+				args[1] = "SPECTATOR";
 			case "SPECTATOR":
 				type = GameType.SPECTATOR;
 				break;
 			default:
-				sender.sendMessage(makeMessage(TextFormatting.RED, "Invalid gamemode: " + args[0]));
+				sender.sendMessage(makeMessage(TextFormatting.RED, "Invalid gamemode: " + args[1]));
 				sender.sendMessage(makeMessage(TextFormatting.RED, "Take one of: CREATIVE, SURVIVAL, ADVENTURE, SPECTATOR"));
 				return;
 		}
-		mod.config.get(mod.configCategory, args[1], args[0]).set(args[0]);
+		mod.config.get(mod.configCategory, args[2], args[1]).set(args[1]);
 		
 		for(EntityPlayer p: dimension.playerEntities)
 			p.setGameType(type);
 		
 		if(mod.config.hasChanged())
 			mod.config.save();
-		sender.sendMessage(makeMessage(TextFormatting.GREEN, "Changed gamemode for dimension " + args[1] + " to " + args[0]));
+		sender.sendMessage(makeMessage(TextFormatting.GREEN, "Changed gamemode for dimension " + args[2] + " to " + args[1]));
 	}
 	
 	private TextComponentString makeMessage(TextFormatting color, String message) {
