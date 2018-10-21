@@ -59,20 +59,20 @@ public class DimensionalMode {
 	
 	@SubscribeEvent
 	public void onDimensionChange(PlayerEvent.PlayerLoggedInEvent event) {
-		dimensionChange(event, event.player.world.provider.getDimension());
+		dimensionChange(event, event.player.world.provider.getDimension(), false);
 	}
 	
 	@SubscribeEvent
 	public void onDimensionChange(PlayerEvent.PlayerRespawnEvent event) {
-		dimensionChange(event, event.player.world.provider.getDimension());
+		dimensionChange(event, event.player.world.provider.getDimension(), deleteInv);
 	}
 	
 	@SubscribeEvent
 	public void onDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
-		dimensionChange(event, event.toDim);
+		dimensionChange(event, event.toDim, deleteInv);
 	}
 	
-	private void dimensionChange(PlayerEvent event, int toDim)
+	private void dimensionChange(PlayerEvent event, int toDim, boolean deleteInv)
 	{
 		if(event.isCanceled())
 			return;
